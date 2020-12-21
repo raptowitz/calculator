@@ -1,1 +1,1 @@
-# calculator
+An o-screen calculator using JavaScript, HTML, and CSS
