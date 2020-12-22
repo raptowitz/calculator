@@ -2,8 +2,31 @@
 <html>
     <head>
         <title>Calculator</title>
+        <style>
+            .display{
+                outline: 1pt solid black;
+                height: 30px;
+            }
+        </style>
     </head>
     <body>
+        <div class = "display"></div>
+        <button class = "number" value = 0>0</button>
+        <button class = "number" value = 1>1</button>
+        <button class = "number" value = 2>2</button>
+        <button class = "number" value = 3>3</button>
+        <button class = "number" value = 4>4</button>
+        <button class = "number" value = 5>5</button>
+        <button class = "number" value = 6>6</button>
+        <button class = "number" value = 7>7</button>
+        <button class = "number" value = 8>8</button>
+        <button class = "number" value = 9>9</button>
+        <button>+</button>
+        <button>-</button>
+        <button>x</button>
+        <button>/</button>
+        <button>=</button>
+        <button>AC</button>
 
         <script>
             function add(a,b){
@@ -25,6 +48,20 @@
             function operate(operator, a, b){
                 return operator(a,b);
             }
+
+            let display = document.querySelector(".display");
+            let firstNum;
+
+            let numbers = document.querySelectorAll(".number");
+            numbers.forEach(number => number.addEventListener("click", (e)=>{
+                display.textContent += e.target.value;
+                firstNum = display.textContent;
+            }));
+
+            
+            
+
+
 
 
         </script>
