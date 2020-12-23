@@ -43,7 +43,7 @@
                     return a*b;
                 },
                 division: function divide(a,b){
-                     if (b === "0"){
+                     if (Number(b) === 0){
                          return display.textContent = "NOPE";
                     } else {
                          return a/b;
@@ -62,14 +62,31 @@
 
             let numbers = document.querySelectorAll(".number");
             numbers.forEach(button => button.addEventListener("click", (e)=>{
-                if (operator === ""){
-                    firstNum += e.target.value;
-                    display.textContent = firstNum;
 
+                if (operator === ""){
+                    //remove leading zeros
+                    if(firstNum.indexOf("0") === 0){
+                        firstNum = firstNum.slice(1);
+                    }
+                    firstNum += e.target.value;
+                    //turn decimal off
+                    if(firstNum.indexOf(".") !== -1){
+                    document.getElementById("decimal").disabled = true;
+                    }
+                    display.textContent = firstNum
+                
                     console.log("firstNum is ", firstNum)
                 }
                 else {
+                    //remove leading zeros
+                    if(secondNum.indexOf("0") === 0){
+                        secondNum = secondNum.slice(1);
+                    }
                     secondNum += e.target.value;
+                    //turn decimal off
+                    if(secondNum.indexOf(".") !== -1){
+                    document.getElementById("decimal").disabled = true;
+                    }
                     display.textContent = secondNum;
 
                     console.log("secondNum is ", secondNum)
@@ -78,17 +95,24 @@
 
             let operators = document.querySelectorAll(".operator");
             operators.forEach(button => button.addEventListener("click", (e)=>{
+                //turn decimal on 
+                document.getElementById("decimal").disabled = false;
+
                 //if user presses another operator before =
                 if(firstNum !== "" & secondNum !== ""){
                     result = operate(operator, firstNum, secondNum);
                     display.textContent = result;
                     firstNum = result;
                     secondNum = ""
+
+                    console.log("edge 1")
                 }
                 //if user wants to operate on consecutive results
-                else if(result !== "0" && firstNum === ""){
+                else if(result !== "0" && result !== "NOPE" && firstNum === ""){
                     firstNum = result;
                     secondNum = ""
+
+                    console.log("edge 2")
                 }
     
                 operator = calculator[e.target.value];
@@ -99,6 +123,9 @@
 
             let calculate = document.querySelector(".operate");
             calculate.addEventListener("click", () => {
+                //turn decimal on 
+                document.getElementById("decimal").disabled = false;
+
                 //if user presses = before entering second number
                 if(secondNum === ""){
                     secondNum = firstNum;
@@ -117,6 +144,8 @@
 
             let clear = document.querySelector(".clear")
             clear.addEventListener("click", () =>{
+                //turn decimal on 
+                document.getElementById("decimal").disabled = false;
                 firstNum = "";
                 secondNum = "";
                 operator = "";
