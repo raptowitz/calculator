@@ -10,7 +10,7 @@
         </style>
     </head>
     <body>
-        <div class = "display"></div>
+        <div class = "display">0</div>
         <button class = "number" value = 0>0</button>
         <button class = "number" value = 1>1</button>
         <button class = "number" value = 2>2</button>
@@ -21,42 +21,82 @@
         <button class = "number" value = 7>7</button>
         <button class = "number" value = 8>8</button>
         <button class = "number" value = 9>9</button>
-        <button>+</button>
-        <button>-</button>
-        <button>x</button>
-        <button>/</button>
-        <button>=</button>
-        <button>AC</button>
+        <button class = "operator" value = addition>+</button>
+        <button class = "operator" value = subtraction>-</button>
+        <button class = "operator" value = multiplication>x</button>
+        <button class = "operator" value = division>/</button>
+        <button class = "operate">=</button>
+        <button class = "clear">AC</button>
 
         <script>
-            function add(a,b){
-                return a + b;
-            }
+            let display = document.querySelector(".display");
 
-            function subtract(a,b){
-                return a-b;
-            }
-
-            function multiply(a,b){
-                return a*b;
-            }
-
-            function divide(a,b){
-                return a/b;
-            }
+             let calculator = {
+                addition: function add(a,b){
+                    return (a*1) + (b*1);
+                },
+                subtraction: function subtract(a,b){
+                    return a-b;
+                },
+                multiplication: function multiply(a,b){
+                    return a*b;
+                },
+                division: function divide(a,b){
+                     if (b === "0"){
+                         return display.textContent = "IMPOSSIBLE";
+                    } else {
+                         return a/b;
+                    }
+                },
+            };
 
             function operate(operator, a, b){
                 return operator(a,b);
             }
 
-            let display = document.querySelector(".display");
-            let firstNum;
+            let firstNum = "";
+            let secondNum = "";
+            let operator = "";
 
             let numbers = document.querySelectorAll(".number");
-            numbers.forEach(number => number.addEventListener("click", (e)=>{
-                display.textContent += e.target.value;
-                firstNum = display.textContent;
+            numbers.forEach(button => button.addEventListener("click", (e)=>{
+                if (operator === ""){
+                    firstNum += e.target.value;
+                    console.log("firstNum is " + firstNum)
+                    display.textContent = firstNum;
+                }
+                else {
+                    secondNum += e.target.value;
+                    console.log("secondNum is " + secondNum)
+                    display.textContent = secondNum;
+                }
             }));
+
+            let operators = document.querySelectorAll(".operator");
+            operators.forEach(button => button.addEventListener("click", (e)=>{
+                operator = calculator[e.target.value];
+                console.log("this is operator: " + operator)
+            }));
+
+            let calculate = document.querySelector(".operate");
+            calculate.addEventListener("click", () => {
+                console.log(operator)
+                console.log(firstNum)
+                console.log(secondNum)
+                let result = operate(operator, firstNum, secondNum)
+                console.log(result);
+                display.textContent = result;
+                
+            });
+
+            let clear = document.querySelector(".clear")
+            clear.addEventListener("click", () =>{
+                firstNum = "";
+                secondNum = "";
+                operator = "";
+                display.textContent = 0;
+
+            });
 
             
             
