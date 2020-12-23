@@ -27,6 +27,7 @@
         <button class = "operator" value = division>/</button>
         <button class = "operate">=</button>
         <button class = "clear">AC</button>
+        <button class = "number" id = "decimal" value = .>.</button>
 
         <script>
             let display = document.querySelector(".display");
@@ -43,7 +44,7 @@
                 },
                 division: function divide(a,b){
                      if (b === "0"){
-                         return display.textContent = "IMPOSSIBLE";
+                         return display.textContent = "NOPE";
                     } else {
                          return a/b;
                     }
@@ -57,35 +58,60 @@
             let firstNum = "";
             let secondNum = "";
             let operator = "";
+            let result = "";
 
             let numbers = document.querySelectorAll(".number");
             numbers.forEach(button => button.addEventListener("click", (e)=>{
                 if (operator === ""){
                     firstNum += e.target.value;
-                    console.log("firstNum is " + firstNum)
                     display.textContent = firstNum;
+
+                    console.log("firstNum is ", firstNum)
                 }
                 else {
                     secondNum += e.target.value;
-                    console.log("secondNum is " + secondNum)
                     display.textContent = secondNum;
+
+                    console.log("secondNum is ", secondNum)
                 }
             }));
 
             let operators = document.querySelectorAll(".operator");
             operators.forEach(button => button.addEventListener("click", (e)=>{
+                //if user presses another operator before =
+                if(firstNum !== "" & secondNum !== ""){
+                    result = operate(operator, firstNum, secondNum);
+                    display.textContent = result;
+                    firstNum = result;
+                    secondNum = ""
+                }
+                //if user wants to operate on consecutive results
+                else if(result !== "0" && firstNum === ""){
+                    firstNum = result;
+                    secondNum = ""
+                }
+    
                 operator = calculator[e.target.value];
-                console.log("this is operator: " + operator)
+
+                console.log("operator is ", operator)
+                console.log("firstNum is ", firstNum)
             }));
 
             let calculate = document.querySelector(".operate");
             calculate.addEventListener("click", () => {
-                console.log(operator)
-                console.log(firstNum)
-                console.log(secondNum)
-                let result = operate(operator, firstNum, secondNum)
-                console.log(result);
+                //if user presses = before entering second number
+                if(secondNum === ""){
+                    secondNum = firstNum;
+                }
+                result = operate(operator, firstNum, secondNum);
                 display.textContent = result;
+                firstNum = "";
+                secondNum = "";
+                operator = "";
+
+                console.log("result is ", result)
+                console.log("firstNum is ", firstNum)
+                console.log("secondNum is ", secondNum)
                 
             });
 
@@ -94,10 +120,9 @@
                 firstNum = "";
                 secondNum = "";
                 operator = "";
+                result = "";
                 display.textContent = 0;
-
             });
-
             
             
 
