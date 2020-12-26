@@ -3,36 +3,89 @@
     <head>
         <title>Calculator</title>
         <style>
-            .display{
-                outline: 1pt solid black;
-                height: 30px;
+            body{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #ECF5F8;
             }
+
+            .calculator{
+                margin-top: 25vh;
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #110934;
+
+                display: grid;
+                grid-template-columns: 50px 50px 50px 50px;
+                grid-template-rows: 50px 50px 50px 50px 50px 50px;
+                gap: 2px 2px;
+                grid-template-areas:
+                    "display display display display"
+                    "clear clear decimal division"
+                    "number number number multiplication"
+                    "number number number subtraction"
+                    "number number number addition"
+                    "number number operate operate"
+                }
+
+            .display{
+                background: #b9b9b9;
+                grid-area: 1/1/2/5;
+            }
+
+            #zero{
+                grid-area: 6/1/7/3
+            }
+
+            .topButton{
+                background-color: #347B98
+            }
+
+            .number{
+                background-color: #D4EDF7
+            }
+
+            .operator{
+                background-color: #FB9902
+            }
+
+            .operate{
+                background-color: #FB9902
+            }
+
+            
         </style>
     </head>
     <body>
-        <div class = "display">0</div>
-        <button class = "number" value = 0>0</button>
-        <button class = "number" value = 1>1</button>
-        <button class = "number" value = 2>2</button>
-        <button class = "number" value = 3>3</button>
-        <button class = "number" value = 4>4</button>
-        <button class = "number" value = 5>5</button>
-        <button class = "number" value = 6>6</button>
-        <button class = "number" value = 7>7</button>
-        <button class = "number" value = 8>8</button>
-        <button class = "number" value = 9>9</button>
-        <button class = "operator" value = addition>+</button>
-        <button class = "operator" value = subtraction>-</button>
-        <button class = "operator" value = multiplication>x</button>
-        <button class = "operator" value = division>/</button>
-        <button class = "operate">=</button>
-        <button class = "clear">AC</button>
-        <button class = "number" id = "decimal" value = .>.</button>
+
+        <div class = "calculator">
+            <div class = "display">0</div>
+            <button class = "clear topButton">AC</button>
+            <button class = "back topButton">CE</button>
+            <button class = "topButton" id = "negate">+/-</button>
+            <button class = "operator" value = division>/</button>
+            <button class = "number" value = 7>7</button>
+            <button class = "number" value = 8>8</button>
+            <button class = "number" value = 9>9</button>
+            <button class = "operator" value = multiplication>x</button>
+            <button class = "number" value = 4>4</button>
+            <button class = "number" value = 5>5</button>
+            <button class = "number" value = 6>6</button>
+            <button class = "operator" value = subtraction>-</button>
+            <button class = "number" value = 1>1</button>
+            <button class = "number" value = 2>2</button>
+            <button class = "number" value = 3>3</button>
+            <button class = "operator" value = addition>+</button>
+            <button class = "number" id = "zero" value = 0>0</button>
+            <button class = "number" id = "decimal" value = .>.</button>
+            <button class = "operate">=</button>
+        </div>
 
         <script>
             let display = document.querySelector(".display");
 
-             let calculator = {
+            let calculator = {
                 addition: function add(a,b){
                     return (a*1) + (b*1);
                 },
@@ -54,7 +107,8 @@
             function operate(operator, a, b){
                 return operator(a,b);
             }
-
+            
+            let currentNum = "";
             let firstNum = "";
             let secondNum = "";
             let operator = "";
@@ -62,100 +116,96 @@
 
             let numbers = document.querySelectorAll(".number");
             numbers.forEach(button => button.addEventListener("click", (e)=>{
-
-                if (operator === ""){
                     //remove leading zeros
-                    if(firstNum.indexOf("0") === 0){
-                        firstNum = firstNum.slice(1);
+                    if(currentNum.indexOf("0") === 0){
+                        currentNum = currentNum.slice(1);
+                    } 
+                    currentNum += e.target.value;
+                   
+                    if (operator === ""){
+                        firstNum = currentNum;
                     }
-                    firstNum += e.target.value;
-                    //turn decimal off
-                    if(firstNum.indexOf(".") !== -1){
-                    document.getElementById("decimal").disabled = true;
+                    else{
+                        secondNum = currentNum;
                     }
-                    display.textContent = firstNum
-                
-                    console.log("firstNum is ", firstNum)
-                }
-                else {
-                    //remove leading zeros
-                    if(secondNum.indexOf("0") === 0){
-                        secondNum = secondNum.slice(1);
-                    }
-                    secondNum += e.target.value;
-                    //turn decimal off
-                    if(secondNum.indexOf(".") !== -1){
-                    document.getElementById("decimal").disabled = true;
-                    }
-                    display.textContent = secondNum;
-
-                    console.log("secondNum is ", secondNum)
-                }
+                    display.textContent = currentNum;
+                    decimalCheck();
             }));
 
             let operators = document.querySelectorAll(".operator");
             operators.forEach(button => button.addEventListener("click", (e)=>{
-                //turn decimal on 
-                document.getElementById("decimal").disabled = false;
-
                 //if user presses another operator before =
                 if(firstNum !== "" & secondNum !== ""){
                     result = operate(operator, firstNum, secondNum);
                     display.textContent = result;
                     firstNum = result;
-                    secondNum = ""
-
-                    console.log("edge 1")
+                    secondNum = "";
                 }
                 //if user wants to operate on consecutive results
                 else if(result !== "0" && result !== "NOPE" && firstNum === ""){
                     firstNum = result;
-                    secondNum = ""
-
-                    console.log("edge 2")
+                    secondNum = "";
                 }
-    
                 operator = calculator[e.target.value];
-
-                console.log("operator is ", operator)
-                console.log("firstNum is ", firstNum)
+                currentNum = "";
+                decimalCheck();
             }));
 
             let calculate = document.querySelector(".operate");
             calculate.addEventListener("click", () => {
-                //turn decimal on 
-                document.getElementById("decimal").disabled = false;
-
                 //if user presses = before entering second number
                 if(secondNum === ""){
                     secondNum = firstNum;
                 }
                 result = operate(operator, firstNum, secondNum);
                 display.textContent = result;
+                currentNum = "";
                 firstNum = "";
                 secondNum = "";
                 operator = "";
-
-                console.log("result is ", result)
-                console.log("firstNum is ", firstNum)
-                console.log("secondNum is ", secondNum)
-                
+                decimalCheck();
             });
 
-            let clear = document.querySelector(".clear")
+            let back = document.querySelector(".back");
+            back.addEventListener("click", () =>{
+                currentNum = currentNum.slice(0, currentNum.length-1);
+                display.textContent = currentNum;
+                decimalCheck();
+            });
+
+            let clear = document.querySelector(".clear");
             clear.addEventListener("click", () =>{
-                //turn decimal on 
                 document.getElementById("decimal").disabled = false;
+                currentNum = "";
                 firstNum = "";
                 secondNum = "";
                 operator = "";
                 result = "";
                 display.textContent = 0;
             });
-            
-            
 
+            let decimal = document.getElementById("decimal");
+            function decimalCheck(){
+                if(currentNum.indexOf(".") === -1){
+                    document.getElementById("decimal").disabled = false;
+                }
+                else{
+                    document.getElementById("decimal").disabled = true;
+                }
+            };
 
+            let negate = document.getElementById("negate")
+            negate.addEventListener("click", () =>{
+                currentNum = currentNum * -1;
+                currentNum = currentNum.toString();
+                if (operator === ""){
+                        firstNum = currentNum;
+                }
+                else{
+                    secondNum = currentNum;
+                }
+                display.textContent = currentNum;
+            });
 
 
         </script>
