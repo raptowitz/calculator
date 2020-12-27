@@ -3,35 +3,36 @@
     <head>
         <title>Calculator</title>
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
             body{
                 display: flex;
                 justify-content: center;
-                align-items: center;
                 background-color: #ECF5F8;
+                font-family: 'Audiowide', cursive;
             }
 
             .calculator{
-                margin-top: 25vh;
-                padding: 10px;
+                margin-top: 15vh;
+                padding: 20px;
                 border-radius: 5px;
                 background-color: #110934;
 
                 display: grid;
-                grid-template-columns: 50px 50px 50px 50px;
-                grid-template-rows: 50px 50px 50px 50px 50px 50px;
-                gap: 2px 2px;
+                grid-template-columns: 70px 70px 70px 70px;
+                grid-template-rows: 80px 70px 70px 70px 70px 70px;
+                gap: 3px 3px;
                 grid-template-areas:
                     "display display display display"
-                    "clear clear decimal division"
-                    "number number number multiplication"
-                    "number number number subtraction"
-                    "number number number addition"
-                    "number number operate operate"
                 }
 
             .display{
                 background: #b9b9b9;
+                padding: 25px 10px 0px 0px;
+                margin-bottom: 5px;
                 grid-area: 1/1/2/5;
+                text-align: right;
+                font-size: 40px;
             }
 
             #zero{
@@ -43,7 +44,7 @@
             }
 
             .number{
-                background-color: #D4EDF7
+                background-color: #8964ac
             }
 
             .operator{
@@ -54,11 +55,21 @@
                 background-color: #FB9902
             }
 
+            button{
+                font-size: 14px;
+                border: 0pt;
+                border-radius: 2px;
+                font-family: 'Audiowide', cursive;
+                font-size: large;
+            }
+
+            button:active{
+                transform: scale(0.95);
+            }
             
         </style>
     </head>
     <body>
-
         <div class = "calculator">
             <div class = "display">0</div>
             <button class = "clear topButton">AC</button>
@@ -114,22 +125,27 @@
             let operator = "";
             let result = "";
 
+            function storeNumber(){
+                if (operator === ""){
+                    firstNum = currentNum;
+                }
+                else{
+                    secondNum = currentNum;
+                }
+            }
+
             let numbers = document.querySelectorAll(".number");
             numbers.forEach(button => button.addEventListener("click", (e)=>{
                     //remove leading zeros
                     if(currentNum.indexOf("0") === 0){
                         currentNum = currentNum.slice(1);
                     } 
-                    currentNum += e.target.value;
-                   
-                    if (operator === ""){
-                        firstNum = currentNum;
-                    }
-                    else{
-                        secondNum = currentNum;
+                    if(currentNum.length<9){
+                        currentNum += e.target.value;
                     }
                     display.textContent = currentNum;
-                    decimalCheck();
+                    console.log(currentNum)
+                    storeNumber();
             }));
 
             let operators = document.querySelectorAll(".operator");
@@ -148,7 +164,6 @@
                 }
                 operator = calculator[e.target.value];
                 currentNum = "";
-                decimalCheck();
             }));
 
             let calculate = document.querySelector(".operate");
@@ -163,19 +178,39 @@
                 firstNum = "";
                 secondNum = "";
                 operator = "";
-                decimalCheck();
             });
 
             let back = document.querySelector(".back");
             back.addEventListener("click", () =>{
-                currentNum = currentNum.slice(0, currentNum.length-1);
+                if(currentNum === ""){
+                    display.textContent = 0;
+                }
+                else{
+                    currentNum = currentNum.slice(0, currentNum.length-1);
+                    display.textContent = currentNum;
+                    storeNumber();
+                }
+            });
+
+            let negate = document.getElementById("negate")
+            negate.addEventListener("click", () =>{
+                currentNum = currentNum * -1;
+                currentNum = currentNum.toString();
                 display.textContent = currentNum;
-                decimalCheck();
+                storeNumber();
+            });
+
+            window.addEventListener("click", () =>{
+                if(currentNum.indexOf(".") === -1){
+                    document.getElementById("decimal").disabled = false;
+                }
+                else{
+                    document.getElementById("decimal").disabled = true;
+                }
             });
 
             let clear = document.querySelector(".clear");
             clear.addEventListener("click", () =>{
-                document.getElementById("decimal").disabled = false;
                 currentNum = "";
                 firstNum = "";
                 secondNum = "";
@@ -184,29 +219,11 @@
                 display.textContent = 0;
             });
 
-            let decimal = document.getElementById("decimal");
-            function decimalCheck(){
-                if(currentNum.indexOf(".") === -1){
-                    document.getElementById("decimal").disabled = false;
-                }
-                else{
-                    document.getElementById("decimal").disabled = true;
-                }
-            };
-
-            let negate = document.getElementById("negate")
-            negate.addEventListener("click", () =>{
-                currentNum = currentNum * -1;
-                currentNum = currentNum.toString();
-                if (operator === ""){
-                        firstNum = currentNum;
-                }
-                else{
-                    secondNum = currentNum;
-                }
-                display.textContent = currentNum;
+            window.addEventListener("keypress", (e) => {
+                    if(e.charCode<58 || e.charCode>47){
+                        zero.click();
+                    }
             });
-
 
         </script>
     </body>
